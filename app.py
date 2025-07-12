@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 client = anthropic.Anthropic(
-    api_key="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"  # replace with your real key
+    api_key=os.getenv("ANTHROPIC_API_KEY")
 )
 
 @app.route('/')

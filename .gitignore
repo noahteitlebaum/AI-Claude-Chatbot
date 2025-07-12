@@ -1,2 +1,8 @@
-# Environment variables file (your API keys)
 .env
+__pycache__/
+*.py[cod]
+venv/
+env/
+.vscode/
+.DS_Store
+*.log
