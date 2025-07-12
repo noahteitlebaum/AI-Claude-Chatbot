@@ -5,6 +5,8 @@ import anthropic
 app = Flask(__name__)
 CORS(app)
 
+load_dotenv()
+
 client = anthropic.Anthropic(
     api_key=os.getenv("ANTHROPIC_API_KEY")
 )
