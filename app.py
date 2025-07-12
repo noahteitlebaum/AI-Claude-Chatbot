@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import anthropic
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(app)
