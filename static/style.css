@@ -12,29 +12,55 @@ body {
     background: white;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
 }
 
 h1 {
     text-align: center;
     color: #4a4a4a;
+    margin-bottom: 20px;
 }
 
 #chat-box {
-    height: 400px;
+    flex-grow: 1;
     overflow-y: auto;
     border: 1px solid #ccc;
     padding: 15px;
     margin-bottom: 10px;
     background: #fafafa;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
 }
 
 .message {
     margin-bottom: 15px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    max-width: 75%;
+    line-height: 1.4;
+    word-wrap: break-word;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.message.user {
+    background-color: #cce5ff;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.message.assistant {
+    background-color: #e2e8f0;
+    align-self: flex-start;
+    text-align: left;
 }
 
 form {
     display: flex;
+    gap: 10px;
 }
 
 input[type="text"] {
@@ -42,7 +68,7 @@ input[type="text"] {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    margin-right: 10px;
+    font-size: 1rem;
 }
 
 button {
@@ -52,8 +78,29 @@ button {
     color: white;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
 }
 
 button:hover {
     background-color: #0050cc;
+}
+
+/* Optional: scrollbar customization */
+#chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chat-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 8px;
+}
+
+#chat-box::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 8px;
+}
+
+#chat-box::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
 }

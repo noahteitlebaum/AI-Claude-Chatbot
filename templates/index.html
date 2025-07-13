@@ -4,13 +4,95 @@
     <meta charset="UTF-8">
     <title>Noah-GPT</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a4a4a;
+            margin-bottom: 20px;
+        }
+
+        #chat-box {
+            flex: 1;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #fafafa;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background-color: #cce5ff;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .message.assistant {
+            background-color: #e2e8f0;
+            align-self: flex-start;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #0066ff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0050cc;
+        }
+    </style>
 </head>
 <body>
     <div class="chat-container">
         <h1>Noah-GPT</h1>
         <div id="chat-box"></div>
         <form id="chat-form">
-            <input type="text" id="user-input" placeholder="Type your message..." required>
+            <input type="text" id="user-input" placeholder="Type your message..." required autocomplete="off">
             <button type="submit">Send</button>
         </form>
     </div>
@@ -19,28 +101,46 @@
         const chatBox = document.getElementById('chat-box');
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
+        const submitButton = chatForm.querySelector('button');
 
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const message = userInput.value;
-            appendMessage("You", message);
-            userInput.value = "";
 
-            const res = await fetch('/chat', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message})
-            });
-            const data = await res.json();
-            appendMessage("Noah-GPT", data.reply);
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            appendMessage("You", message, true);
+            userInput.value = "";
+            userInput.disabled = true;
+            submitButton.disabled = true;
+
+            const typingMessage = appendMessage("Noah-GPT", "<em>Typing...</em>", false);
+
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await res.json();
+                typingMessage.innerHTML = `<strong>Noah-GPT:</strong> ${data.reply}`;
+            } catch (err) {
+                typingMessage.innerHTML = `<strong>Noah-GPT:</strong> <span style="color:red;">Error: Could not fetch response.</span>`;
+            }
+
+            userInput.disabled = false;
+            submitButton.disabled = false;
+            userInput.focus();
         });
 
-        function appendMessage(sender, text) {
+        function appendMessage(sender, text, isUser = false) {
             const msg = document.createElement('div');
             msg.classList.add('message');
+            msg.classList.add(isUser ? 'user' : 'assistant');
             msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
             chatBox.appendChild(msg);
             chatBox.scrollTop = chatBox.scrollHeight;
+            return msg;
         }
     </script>
 </body>
